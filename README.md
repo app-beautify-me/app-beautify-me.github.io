@@ -21,15 +21,21 @@ The Gemfile selects Ruby 3.3 and the GitHub Pages 232 dependency set. This avoid
 silently resolving an older Pages release to satisfy incompatible dependencies.
 
 On Fedora, install the build tools and libraries, then select Ruby 3.3 using
-your Ruby version manager:
+your Ruby version manager. If needed, install
+[rbenv](https://github.com/rbenv/rbenv#installation) and its
+[ruby-build plugin](https://github.com/rbenv/ruby-build#installation), initialize
+rbenv for Bash, and open a new terminal before continuing:
 
 ```sh
 sudo dnf install gcc gcc-c++ make openssl-devel libyaml-devel zlib-devel readline-devel
+sudo dnf install rbenv
+
+rbenv install --skip-existing
 
 # With rbenv already installed, run from this repository:
-rbenv install --skip-existing
-rbenv local 3.3.12
 
+rbenv local 3.3.12
+eval "$(rbenv init -)"
 ruby -v
 bundle --version
 ```
@@ -45,6 +51,30 @@ bundle install
 
 Commit `Gemfile.lock` when dependency versions change. `.bundle/`,
 `vendor/`, Jekyll caches, and `_site/` are ignored by Git.
+
+### If `bundle install` fails with Ruby 4
+
+GitHub Pages 232 depends on `commonmarker` 0.x, which requires Ruby below 4.0.
+Changing the Gemfile to allow Ruby 4 cannot resolve that dependency conflict.
+Keep the Gemfile on Ruby 3.3 and activate **3.3.12** before running Bundler.
+The `.ruby-version` file only selects Ruby when a version manager is installed
+and initialized in your shell; it does not change the system Ruby by itself.
+
+With rbenv installed, initialize it and check both executables:
+
+```sh
+eval "$(rbenv init - bash)"
+rbenv install --skip-existing
+rbenv local 3.3.12
+ruby -v
+command -v ruby
+command -v bundle
+bundle install
+```
+
+`ruby -v` should report 3.3.12, and both executables should come from rbenv's
+shims. If they still resolve to `/usr/bin/ruby` or a Bundler executable in
+`~/bin`, check your shell's `PATH` order and initialize rbenv again.
 
 ## Preview locally
 
