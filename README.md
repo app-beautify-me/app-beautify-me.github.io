@@ -10,17 +10,17 @@ verified.
 
 ## Prerequisites
 
-- Ruby **3.3.x**, matching [GitHub Pages' Jekyll builder](https://github.com/actions/jekyll-build-pages/blob/main/Dockerfile).
-  `.ruby-version` selects **3.3.12** for version managers such as
+- Ruby **3.4.x**. `.ruby-version` selects **3.4.11** for both the GitHub Actions
+  workflow and version managers such as
   [rbenv](https://github.com/rbenv/rbenv#installation).
-- Bundler, included with Ruby 3.3.
+- Bundler, included with Ruby 3.4.
 - Git and a compiler toolchain for native gem dependencies.
 - Internet access for RubyGems and the remote theme download.
 
-The Gemfile selects Ruby 3.3 and the GitHub Pages 232 dependency set. This avoids
+The Gemfile selects Ruby 3.4 and the GitHub Pages 232 dependency set. This avoids
 silently resolving an older Pages release to satisfy incompatible dependencies.
 
-On Fedora, install the build tools and libraries, then select Ruby 3.3 using
+On Fedora, install the build tools and libraries, then select Ruby 3.4 using
 your Ruby version manager. If needed, install
 [rbenv](https://github.com/rbenv/rbenv#installation) and its
 [ruby-build plugin](https://github.com/rbenv/ruby-build#installation), initialize
@@ -34,7 +34,7 @@ rbenv install --skip-existing
 
 # With rbenv already installed, run from this repository:
 
-rbenv local 3.3.12
+rbenv local 3.4.11
 eval "$(rbenv init -)"
 ruby -v
 bundle --version
@@ -56,7 +56,7 @@ Commit `Gemfile.lock` when dependency versions change. `.bundle/`,
 
 GitHub Pages 232 depends on `commonmarker` 0.x, which requires Ruby below 4.0.
 Changing the Gemfile to allow Ruby 4 cannot resolve that dependency conflict.
-Keep the Gemfile on Ruby 3.3 and activate **3.3.12** before running Bundler.
+Keep the Gemfile on Ruby 3.4 and activate **3.4.11** before running Bundler.
 The `.ruby-version` file only selects Ruby when a version manager is installed
 and initialized in your shell; it does not change the system Ruby by itself.
 
@@ -65,14 +65,14 @@ With rbenv installed, initialize it and check both executables:
 ```sh
 eval "$(rbenv init - bash)"
 rbenv install --skip-existing
-rbenv local 3.3.12
+rbenv local 3.4.11
 ruby -v
 command -v ruby
 command -v bundle
 bundle install
 ```
 
-`ruby -v` should report 3.3.12, and both executables should come from rbenv's
+`ruby -v` should report 3.4.11, and both executables should come from rbenv's
 shims. If they still resolve to `/usr/bin/ruby` or a Bundler executable in
 `~/bin`, check your shell's `PATH` order and initialize rbenv again.
 
@@ -127,13 +127,15 @@ comments, search, social sharing, and author profiles are disabled.
 
 ## GitHub Pages deployment
 
-This repository assumes GitHub Pages is configured to publish from **`main`**
-at **`/ (root)`** using **Deploy from a branch**. Confirm the existing source
-under **Settings → Pages → Build and deployment**.
+Set the source to **GitHub Actions** under **Settings → Pages → Build and
+deployment**. The workflow in `.github/workflows/build-deploy-website.yml`
+builds the site using the Ruby version in `.ruby-version`.
 
 After local verification, commit and push the source changes to `main`.
-GitHub Pages builds Jekyll and publishes the result automatically. Check the
-Pages build/deployment result in GitHub, then verify the live pages and HTTPS.
+The workflow builds Jekyll and uploads the site artifact. Its deployment job
+currently runs only on reruns, so rerun the workflow to publish after a successful
+build. Check the Pages deployment result in GitHub, then verify the live pages
+and HTTPS.
 Publication can take up to ten minutes. Generated `_site/` files are not
 committed.
 

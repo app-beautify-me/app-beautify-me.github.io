@@ -12,7 +12,7 @@
 
 ## Build, Test, and Development Commands
 
-Use Ruby 3.3.x; `.ruby-version` selects 3.3.12.
+Use Ruby 3.4.x; `.ruby-version` selects 3.4.11.
 
 ```sh
 bundle config set --local path vendor/bundle
